@@ -82,7 +82,7 @@ public class TranslateRepository implements IRepository  {
 
     @Override
     public void deleteWords(Words words) {
-        String where = WordTranslateSchema.TranslateTable.COLSTranslate.WORD_EN+ "=?and" +
+        String where = WordTranslateSchema.TranslateTable.COLSTranslate.WORD_EN+ "=? and =?" +
                 WordTranslateSchema.TranslateTable.COLSTranslate.WORD_FN ;
         String[] whereArgs = new String[]{words.getWordEn(),words.getWordFa()};
         mDatabase.delete(WordTranslateSchema.TranslateTable.TABLE_NAME_TRANSLATE,where,whereArgs);
