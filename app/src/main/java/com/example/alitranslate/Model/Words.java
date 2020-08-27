@@ -1,9 +1,27 @@
 package com.example.alitranslate.Model;
 
-public class Words {
+import java.util.UUID;
 
+public class Words {
+    private UUID wordsID;
     private String WordFa = "" ;
     private String WordEn = "" ;
+
+    public UUID getWordsID() {
+        return wordsID;
+    }
+
+    public void setWordsID(UUID wordsID) {
+        this.wordsID = wordsID;
+    }
+
+    public Words() {
+        this(UUID.randomUUID());
+    }
+
+    public Words(UUID wordsID) {
+        this.wordsID = wordsID;
+    }
 
     public String getWordFa() {
         return WordFa;
