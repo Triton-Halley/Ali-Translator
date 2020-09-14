@@ -5,8 +5,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import androidx.room.Room;
+
 import com.example.alitranslate.DataBase.TranslateBaseHelper;
 import com.example.alitranslate.DataBase.TranslateCursorWrapper;
+import com.example.alitranslate.DataBase.TranslateDataBase;
+import com.example.alitranslate.DataBase.TranslateDatabaseDAO;
 import com.example.alitranslate.DataBase.WordTranslateSchema;
 import com.example.alitranslate.Model.Words;
 
@@ -17,7 +21,7 @@ public class TranslateRepository implements IRepository  {
     private static TranslateRepository sTranslateRepository ;
     private static Context mContext ;
 
-    private SQLiteDatabase mDatabase ;
+    private TranslateDataBase mDatabase ;
     public static TranslateRepository getInstance(Context context){
         mContext = context.getApplicationContext();
         if (sTranslateRepository==null){
@@ -26,10 +30,11 @@ public class TranslateRepository implements IRepository  {
         return sTranslateRepository ;
     }
     private TranslateRepository(){
-        TranslateBaseHelper helper = new TranslateBaseHelper(mContext);
-        mDatabase = helper.getWritableDatabase();
+        mDatabase = Room.databaseBuilder(mContext,TranslateDataBase.class,"TranslateDB")
+                .allowMainThreadQueries()
+                .build();
     }
-    private TranslateCursorWrapper queryWords(String selection,String[] selectionArgs){
+   /* private TranslateCursorWrapper queryWords(String selection,String[] selectionArgs){
         Cursor cursor = mDatabase.query(WordTranslateSchema.TranslateTable.TABLE_NAME_TRANSLATE,
                 null,
                 selection,
@@ -39,18 +44,19 @@ public class TranslateRepository implements IRepository  {
                 null);
         TranslateCursorWrapper wrapper = new TranslateCursorWrapper(cursor);
         return wrapper;
-    }
-    private ContentValues getWordsContentValue(Words words){
+    }*/
+/*    private ContentValues getWordsContentValue(Words words){
         ContentValues values = new ContentValues();
         values.put(WordTranslateSchema.TranslateTable.COLSTranslate.UUID,words.getWordsID().toString());
         values.put(WordTranslateSchema.TranslateTable.COLSTranslate.WORD_EN,words.getWordEn());
         values.put(WordTranslateSchema.TranslateTable.COLSTranslate.WORD_FN,words.getWordFa());
         return values ;
-    }
+    }*/
 
     @Override
     public List<Words> getWordsList() {
-        List<Words> mWords = new ArrayList<>();
+        return mDatabase.TranslateDAO().getWords();
+/*        List<Words> mWords = new ArrayList<>();
         TranslateCursorWrapper cursor = queryWords(null,null);
         try {
             cursor.moveToFirst();
@@ -61,30 +67,33 @@ public class TranslateRepository implements IRepository  {
         }finally {
             cursor.close();
         }
-        return mWords;
+        return mWords;*/
     }
 
     @Override
     public void insetWords(Words words) {
-        ContentValues values = getWordsContentValue(words);
+        mDatabase.TranslateDAO().insertWords(words);
+/*        ContentValues values = getWordsContentValue(words);
         mDatabase.insert(WordTranslateSchema.TranslateTable.TABLE_NAME_TRANSLATE,
-                null,values);
+                null,values);*/
     }
 
     @Override
     public void updateWords(Words words) {
-        ContentValues values = getWordsContentValue(words);
+        mDatabase.TranslateDAO().updateWords(words);
+/*        ContentValues values = getWordsContentValue(words);
         String where = WordTranslateSchema.TranslateTable.COLSTranslate.WORD_EN+ "=? and =?" +
                 WordTranslateSchema.TranslateTable.COLSTranslate.WORD_FN ;
         String[] whereArgs = new String[]{words.getWordEn(),words.getWordFa()};
-        mDatabase.update(WordTranslateSchema.TranslateTable.TABLE_NAME_TRANSLATE,values,where,whereArgs);
+        mDatabase.update(WordTranslateSchema.TranslateTable.TABLE_NAME_TRANSLATE,values,where,whereArgs);*/
     }
 
     @Override
     public void deleteWords(Words words) {
-        String where = WordTranslateSchema.TranslateTable.COLSTranslate.WORD_EN+ "=? and =?" +
+        mDatabase.TranslateDAO().deleteWords(words);
+/*        String where = WordTranslateSchema.TranslateTable.COLSTranslate.WORD_EN+ "=? and =?" +
                 WordTranslateSchema.TranslateTable.COLSTranslate.WORD_FN ;
         String[] whereArgs = new String[]{words.getWordEn(),words.getWordFa()};
-        mDatabase.delete(WordTranslateSchema.TranslateTable.TABLE_NAME_TRANSLATE,where,whereArgs);
+        mDatabase.delete(WordTranslateSchema.TranslateTable.TABLE_NAME_TRANSLATE,where,whereArgs);*/
     }
 }
