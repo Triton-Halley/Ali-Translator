@@ -1,16 +1,20 @@
 package com.example.alitranslate.Conroller.Activity;
 
-import androidx.appcompat.app.AppCompatActivity;
+import android.content.Context;
+import android.content.Intent;
 
-import android.os.Bundle;
+import androidx.fragment.app.Fragment;
 
-import com.example.alitranslate.R;
+import com.example.alitranslate.Conroller.Fragment.MainFragment;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends SingleFragmentActivity {
 
+    public static Intent newIntent(Context context){
+        Intent intent = new Intent(context,MainActivity.class);
+        return intent;
+    }
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    public Fragment createFragment() {
+        return MainFragment.newInstance();
     }
 }
